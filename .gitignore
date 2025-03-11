@@ -1,0 +1,39 @@
+# Ignore build files
+build/
+*.o
+*.obj
+*.so
+*.dylib
+*.dll
+*.exe
+
+# Ignore Qt Creator specific files
+*.pro.user
+*.qbs.user
+*.pro.user.*
+*.qbs.user.*
+*.pro.user.*
+*.qbs.user.*
+*.creator.user
+*.creator.user.*
+*.creator.user.*
+*.autosave
+
+# Ignore Qt specific files
+*.moc
+*.qrc
+*.ui
+*.qmlc
+*.jsc
+
+# Ignore other generated files
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+*.DS_Store
+
+env/
+.env
+__pycache__/
