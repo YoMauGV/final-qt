@@ -1,6 +1,6 @@
+import os
 import requests
 from dotenv import load_dotenv
-import os
 
 class Clima:
     def __init__(self):
@@ -25,7 +25,3 @@ class Clima:
             'icono': weather_data['weather'][0]['icon'],
             'description': weather_data['weather'][0]['description']
         }
-
-c=Clima()
-
-print(c.extrae_relevantes('Toluca'))

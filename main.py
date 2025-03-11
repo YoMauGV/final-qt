@@ -4,6 +4,7 @@ import library
 import urllib.request
 from PyQt6 import QtCore, QtGui, QtWidgets, uic
 from PyQt6.QtCore import Qt, QTimer
+from weather import Clima
 
 color_translation = {
     "negro": "black",
@@ -40,6 +41,9 @@ class MainWindow(QtWidgets.QMainWindow):
             print(data)
             for figura in data:
                 self.dibuja_figura(figura)
+
+    c = Clima()
+    print(c.extrae_relevantes('Toluca'))
 
     def dibuja_figura(self,json_fig):
         canvas = self.label.pixmap()

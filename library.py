@@ -1,7 +1,7 @@
+import math
 from multimethod import multimethod
 from PyQt6 import QtGui
 from PyQt6.QtCore import Qt
-import math
 
 class Geometrica:
     def __init__(self,painter:QtGui.QPainter, x, y):
