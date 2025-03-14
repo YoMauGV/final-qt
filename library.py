@@ -45,6 +45,22 @@ class Cuadrado(Geometrica):
         self.painter.setBrush(Qt.GlobalColor.transparent)
         self.painter.drawRect(self.x,self.y,self.lado,self.lado)
 
+class Rectangulo(Geometrica):    
+    def __init__(self,painter:QtGui.QPainter, x, y, base, altura):
+        super().__init__(painter,x,y)    
+        self.base = base
+        self.altura = altura
+        
+    @multimethod    
+    def dibujar(self, color:Qt.GlobalColor):
+        self.painter.setBrush(color)
+        self.painter.drawRect(self.x,self.y,self.base,self.altura)
+
+    @multimethod    
+    def dibujar(self):
+        self.painter.setBrush(Qt.GlobalColor.transparent)
+        self.painter.drawRect(self.x,self.y,self.base,self.altura)
+
 class Triangulo(Geometrica):
     def __init__(self, painter:QtGui.QPainter, x, y, lado):
         super().__init__(painter, x, y)

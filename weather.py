@@ -19,9 +19,18 @@ class Clima:
     
     def extrae_relevantes(self,ciudad):
         weather_data=self.consulta_ciudad(ciudad)
-        return {
-            'ciudad': weather_data['name'],
-            'temperatura': weather_data['main']['temp'],
-            'icono': weather_data['weather'][0]['icon'],
-            'description': weather_data['weather'][0]['description']
-        }
+        #print(weather_data)
+        if 'message' in weather_data:
+            return {
+                'ciudad': ciudad,
+                'temperatura': 'No disponible',
+                'icono': 'No disponible',
+                'description': 'No disponible'
+            }
+        else:
+            return {
+                'ciudad': weather_data['name'],
+                'temperatura': weather_data['main']['temp'],
+                'icono': weather_data['weather'][0]['icon'],
+                'description': weather_data['weather'][0]['description']
+            }
