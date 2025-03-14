@@ -37,6 +37,72 @@ descripcion = {
     "mist": "Neblina"
 }
 
+figura_clima = {
+    "01": {
+        "figura": "circulo",
+        "x": 75,
+        "y": 50,
+        "medida": 40,
+        "color": "amarillo oscuro"
+        },
+    "02": {
+        "figura": "triangulo",
+        "x": 40,
+        "y": 85,
+        "medida": 80,
+        "color": "verde oscuro"
+    },
+    "03": {
+        "figura": "cuadrado",
+        "x": 40,
+        "y": 10,
+        "medida": 80,
+        "color": "cian"
+    },
+    "04": {
+        "figura": "pentagono",
+        "x": 70,
+        "y": 55,
+        "medida": 40,
+        "color": "rojo oscuro"
+    },
+    "09": {
+        "figura": "triangulo",
+        "x": 40,
+        "y": 85,
+        "medida": 80,
+        "color": "azul oscuro"
+    },
+    "10": {
+        "figura": "cuadrado",
+        "x": 40,
+        "y": 10,
+        "medida": 80,
+        "color": "verde"
+    },
+    "11": {
+        "figura": "pentagono",
+        "x": 70,
+        "y": 55,
+        "medida": 40,
+        "color": "magenta"
+    },
+    "13": {
+        "figura": "circulo",
+        "x": 75,
+        "y": 50,
+        "medida": 40,
+        "color": "verde oscuro"
+    },
+    "50": {
+        "figura": "rectangulo",
+        "x": 20,
+        "y": 20,
+        "medida": 60,
+        "color": "gris"
+        },
+}
+
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
@@ -91,23 +157,24 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.label.setPixmap(canvas)
             else:   
                 print(data)
-                print(data['icono'])
+                print(data['icono'][:2])
+                fig = figura_clima[data['icono'][:2]]
+                print(fig["figura"])
                 if data["icono"][-1] == 'n':
                     fondo = True
                 else:
                     fondo = False
-                print(fondo)
                 datos = {
                     "ciudad": data['ciudad'],
                     "temperatura": data['temperatura'],
                     "descripcion": data['description'],
                     "posicion": self.clima,
                     "noche": fondo,
-                    "figura": "circulo",
-                    "x": 50,
-                    "y": 50,
-                    "medida": 50,
-                    "color": "azul"
+                    "figura": fig["figura"],
+                    "x": fig["x"],
+                    "y": fig["y"],
+                    "medida": fig["medida"],
+                    "color": fig["color"]
                 }
                 self.dibuja_figura(datos)
                 if self.clima == 5:
@@ -150,35 +217,35 @@ class MainWindow(QtWidgets.QMainWindow):
         painter.drawText(330, 70 + desplazamiento, f"{descripcion.get(datos['descripcion'], 'Descripción no disponible')}")
         
         if datos["figura"] == "circulo":
-            figura=library.Circulo(painter, datos["x"], datos["y"], datos["medida"])
+            figura=library.Circulo(painter, datos["x"], datos["y"] + desplazamiento, datos["medida"])
             if(datos["color"]):
                 color = color_translation[datos["color"]]
                 figura.dibujar(Qt.GlobalColor[color])
             else:
                 figura.dibujar()
         elif datos["figura"] == 'cuadrado':
-            figura=library.Cuadrado(painter, datos["x"], datos["y"], datos["medida"])
+            figura=library.Cuadrado(painter, datos["x"], datos["y"] + desplazamiento, datos["medida"])
             if(datos["color"]):
                 color = color_translation[datos["color"]]
                 figura.dibujar(Qt.GlobalColor[color])
             else:
                 figura.dibujar()
         elif datos["figura"] == 'rectangulo':
-            figura=library.Rectangulo(painter, datos["x"], datos["y"], datos["medida"] * 2, datos["medida"])
+            figura=library.Rectangulo(painter, datos["x"], datos["y"] + desplazamiento, datos["medida"] * 2, datos["medida"])
             if(datos["color"]):
                 color = color_translation[datos["color"]]
                 figura.dibujar(Qt.GlobalColor[color])
             else:
                 figura.dibujar()
         elif datos["figura"] == 'triangulo':
-            figura=library.Triangulo(painter, datos["x"], datos["y"], datos["medida"])
+            figura=library.Triangulo(painter, datos["x"], datos["y"] + desplazamiento, datos["medida"])
             if(datos["color"]):
                 color = color_translation[datos["color"]]
                 figura.dibujar(Qt.GlobalColor[color])
             else:
                 figura.dibujar()
         elif datos["figura"] == 'pentagono':
-            figura=library.Pentagono(painter, datos["x"], datos["y"], datos["medida"])
+            figura=library.Pentagono(painter, datos["x"], datos["y"] + desplazamiento, datos["medida"])
             if(datos["color"]):
                 color = color_translation[datos["color"]]
                 figura.dibujar(Qt.GlobalColor[color])
