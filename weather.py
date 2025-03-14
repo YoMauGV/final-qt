@@ -22,8 +22,8 @@ class Clima:
         #print(weather_data)
         if 'message' in weather_data:
             return {
-                'ciudad': ciudad,
-                'temperatura': 'No disponible',
+                'ciudad': False,
+                'temperatura': 0.0,
                 'icono': 'No disponible',
                 'description': 'No disponible'
             }

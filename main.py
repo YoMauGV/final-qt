@@ -25,13 +25,25 @@ color_translation = {
     "gris claro": "lightGray"
 }
 
+descripcion = {
+    "clear sky": "Despejado",
+    "few clouds": "Algunas nubes",
+    "scattered clouds": "Nubes dispersas",
+    "broken clouds": "Nublado",
+    "shower rain": "Lluvia ligera",
+    "rain": "Lluvia",
+    "thunderstorm": "Tormenta",
+    "snow": "Nieve",
+    "mist": "Neblina"
+}
+
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Mi App de Clima")
 
         # Variable para numero de ciudad
-        ciudad = 1
+        self.clima = 0
         
         # Crear un layout vertical
         layout = QtWidgets.QVBoxLayout()
@@ -63,63 +75,117 @@ class MainWindow(QtWidgets.QMainWindow):
         if ciudad:
             c = Clima()
             data = c.extrae_relevantes(ciudad)
-            print(data)
-            figura = {
-                "nombre": "circulo",
-                "x": 50,
-                "y": 50,
-                "medida": 0,
-                "color": "azul"
-            }
-            self.dibuja_figura(figura, data['ciudad'], data['temperatura'])
+            if(data['ciudad'] == False): 
+                print("Ciudad no encontrada")
+                canvas = self.label.pixmap()
+                painter = QtGui.QPainter(canvas)
+                desplazamiento = 100 * self.clima
+                # Ilumina el fondo
+                figura=library.Rectangulo(painter,0,0 + desplazamiento,599,100)
+                figura.dibujar(Qt.GlobalColor.white)
+                # Dibuja el texto
+                painter.setPen(Qt.GlobalColor.black)
+                painter.setFont(QtGui.QFont('Arial', 16))
+                painter.drawText(100, 60 + desplazamiento, f"Ciudad no encontrada")
+                painter.end()      
+                self.label.setPixmap(canvas)
+            else:   
+                print(data)
+                print(data['icono'])
+                if data["icono"][-1] == 'n':
+                    fondo = True
+                else:
+                    fondo = False
+                print(fondo)
+                datos = {
+                    "ciudad": data['ciudad'],
+                    "temperatura": data['temperatura'],
+                    "descripcion": data['description'],
+                    "posicion": self.clima,
+                    "noche": fondo,
+                    "figura": "circulo",
+                    "x": 50,
+                    "y": 50,
+                    "medida": 50,
+                    "color": "azul"
+                }
+                self.dibuja_figura(datos)
+                if self.clima == 5:
+                    self.clima = 0
+                else:
+                    self.clima += 1
         else:
             print("Por favor, ingrese el nombre de una ciudad.")
+            canvas = self.label.pixmap()
+            painter = QtGui.QPainter(canvas)
+            desplazamiento = 100 * self.clima
+            # Ilumina el fondo
+            figura=library.Rectangulo(painter,0,0 + desplazamiento,599,100)
+            figura.dibujar(Qt.GlobalColor.white)
+            # Dibuja el texto
+            painter.setPen(Qt.GlobalColor.black)
+            painter.setFont(QtGui.QFont('Arial', 16))
+            painter.drawText(100, 60 + desplazamiento, f"Por favor, ingrese el nombre de una ciudad.")
+            painter.end()      
+            self.label.setPixmap(canvas)
 
-    def dibuja_figura(self,json_fig, ciudad, temperatura):
+    def dibuja_figura(self, datos):
         canvas = self.label.pixmap()
         painter = QtGui.QPainter(canvas)
-        painter.setPen(Qt.GlobalColor.black)
-        painter.setFont(QtGui.QFont('Arial', 12))
-        painter.drawText(50, 50, f"Ciudad: {ciudad}")
-        painter.drawText(50, 70, f"Temperatura: {temperatura}°C")
+        desplazamiento = 100 * datos["posicion"]
+        # Ilumina el fondo
+        if datos["noche"]:
+            figura=library.Rectangulo(painter,0,0 + desplazamiento,599,100)
+            figura.dibujar(Qt.GlobalColor.black)
+            painter.setPen(Qt.GlobalColor.white)
+        else:
+            figura=library.Rectangulo(painter,0,0 + desplazamiento,599,100)
+            figura.dibujar(Qt.GlobalColor.yellow)
+            painter.setPen(Qt.GlobalColor.black)
+        # Dibuja el texto
+        painter.setFont(QtGui.QFont('Arial', 42))
+        painter.drawText(160, 70 + desplazamiento, f"{int(round(datos["temperatura"]))} °C")
+        painter.setFont(QtGui.QFont('Arial', 16))
+        painter.drawText(330, 40 + desplazamiento, f"Ciudad: {datos["ciudad"]}")
+        painter.drawText(330, 70 + desplazamiento, f"{descripcion.get(datos['descripcion'], 'Descripción no disponible')}")
         
-        if json_fig["nombre"] == "circulo":
-            figura=library.Circulo(painter,json_fig["x"],json_fig["y"],json_fig["medida"])
-            if(json_fig["color"]):
-                color = color_translation[json_fig["color"]]
+        if datos["figura"] == "circulo":
+            figura=library.Circulo(painter, datos["x"], datos["y"], datos["medida"])
+            if(datos["color"]):
+                color = color_translation[datos["color"]]
                 figura.dibujar(Qt.GlobalColor[color])
             else:
                 figura.dibujar()
-        elif json_fig["nombre"] == 'cuadrado':
-            figura=library.Cuadrado(painter,json_fig["x"],json_fig["y"],json_fig["medida"])
-            if(json_fig["color"]):
-                color = color_translation[json_fig["color"]]
+        elif datos["figura"] == 'cuadrado':
+            figura=library.Cuadrado(painter, datos["x"], datos["y"], datos["medida"])
+            if(datos["color"]):
+                color = color_translation[datos["color"]]
                 figura.dibujar(Qt.GlobalColor[color])
             else:
                 figura.dibujar()
-        elif json_fig["nombre"] == 'rectangulo':
-            figura=library.Rectangulo(painter,json_fig["x"],json_fig["y"],json_fig["medida"])
-            if(json_fig["color"]):
-                color = color_translation[json_fig["color"]]
+        elif datos["figura"] == 'rectangulo':
+            figura=library.Rectangulo(painter, datos["x"], datos["y"], datos["medida"] * 2, datos["medida"])
+            if(datos["color"]):
+                color = color_translation[datos["color"]]
                 figura.dibujar(Qt.GlobalColor[color])
             else:
                 figura.dibujar()
-        elif json_fig["nombre"] == 'triangulo':
-            figura=library.Triangulo(painter,json_fig["x"],json_fig["y"],json_fig["medida"])
-            if(json_fig["color"]):
-                color = color_translation[json_fig["color"]]
+        elif datos["figura"] == 'triangulo':
+            figura=library.Triangulo(painter, datos["x"], datos["y"], datos["medida"])
+            if(datos["color"]):
+                color = color_translation[datos["color"]]
                 figura.dibujar(Qt.GlobalColor[color])
             else:
                 figura.dibujar()
-        elif json_fig["nombre"] == 'pentagono':
-            figura=library.Pentagono(painter,json_fig["x"],json_fig["y"],json_fig["medida"])
-            if(json_fig["color"]):
-                color = color_translation[json_fig["color"]]
+        elif datos["figura"] == 'pentagono':
+            figura=library.Pentagono(painter, datos["x"], datos["y"], datos["medida"])
+            if(datos["color"]):
+                color = color_translation[datos["color"]]
                 figura.dibujar(Qt.GlobalColor[color])
             else:
                 figura.dibujar()
         else:
-            print("No se reconoce la figura {}".format(json_fig))
+            print("No se reconoce la figura {}".format(datos["figura"]))
         painter.end()      
         self.label.setPixmap(canvas)
 
